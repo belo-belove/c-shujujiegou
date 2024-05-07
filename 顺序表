@@ -1,0 +1,135 @@
+//c语言手写顺序表
+#include<stdio.h>
+#include<stdlib.h>
+//在C语言中，return;（不带任何值或表达式）在函数中的使用通常与void类型的函数有关。它表示函数已经完成其任务，并且没有返回值（即返回类型为void）。
+
+typedef struct Sequentallist {  
+	int *elements;//利用动态数组数组大小
+	size_t size ;//顺序表中元素个数
+	size_t capacity;//顺序表中最多容纳元素个数
+	 //size_t通常表示对象大小是无符号整数 
+}; 
+//创建 
+void SequentallistInit(Sequentallist*list,int capacity)
+{/*Sequentallist*list,int capacity
+	顺序表指针和最大容纳个数*/
+	 list->elements=(int*)malloc(sizeof(int)*capacity);//f分配内存大小 
+	 list->size =0;//表示没元素
+	 list->capacity =capacity;//容量就等于传进来的容量
+	  
+}
+//销毁 
+void SequentallistDetroy(Sequentallist*list)
+{	if(list->elements)
+	{
+		free(list->elements);
+		list->elements=NULL;		
+	}	
+}
+//获取顺序表大小的接口
+size_t SequentallistSize(const Sequentallist*list)
+{
+	return list->size;
+}
+//插入
+void SequentallistInsert(Sequentallist*list,int index,int element)
+{	//判断索引是否正常 
+	if(index<0||index>list->size)
+	{
+		printf("Invalid index\n");
+		return ;
+	}
+	//如果顺序表满了就进行扩容
+	if(list->size==list->capacity)
+	{
+		int *newelements=(int *)realloc(list->elements,sizeof(int)*list->capacity*2);
+		//检查是是否扩容成功
+		if(newelements==NULL)
+		{
+			printf("Failed to allocate memory\n");
+			return ;
+		}
+		list->elements=newelements;
+		list->capacity*=2;
+		for(size_t i=list->size;i>index;--i)
+		{
+			list->elements[i]=list->elements[i-1];
+		}
+		list->elements[index]=element;
+		++list->size; 
+	 } 
+ } 
+ //顺序表删除
+ void SequentallistDelete(Sequentallist*list,int index)
+ {	if(index<0||index>=list->size)
+	 {
+	 	printf("Invalid index\n");
+	 	return ;
+ 	
+ 	}
+ 	for(size_t i=index;i<list->size;++i)
+ 	{
+ 		list->elements[i]=list->elements[i+1];
+ 		
+ 		
+	 }
+	 --list->size;
+ 	
+  } 
+  //顺序表查找
+int SequentallistFind(const Sequentallist*list,int element)
+{
+	for(size_t i=0;i<list->size;++i)
+	{
+		if(list->elements[i]==element)
+		{
+			return i;
+		}
+	}
+	return -1;
+ } 
+ //查询索引位置 
+ int SequentallistIndex(const Sequentallist*list,int index)
+ {
+ 	if(index<0||index>=list->size)
+ 	{
+ 		printf("Invalid index\n");
+ 		return -1;
+	 }
+	 return list->elements[index];
+ }
+ //改动
+ void SequentallistSet(Sequentallist*list,int index,int element)
+ {
+ 	if(index<0||index>=list->size)
+ 	{
+ 		printf("Invalid index\n");
+ 		return ;
+	 }
+	 list->elements[index]=element;
+  } 
+  
+  
+  int main(){
+  	Sequentallist list;
+  	SequentallistInit(&list,1);
+  	for(int i=0;i<10;i++)
+  	{
+  		SequentallistInsert(&list,i,i*10);
+	  }//打印大小 
+	  printf("Size:%d\n",SequentallistSize(&list));
+	  int elem=SequentallistFind(&list,2);
+	  printf("%d %d\n",2,elem);
+	  int index=SequentallistFind(&list,15);
+	   printf("%d %d\n",15,list);
+	  SequentallistSet(&list,3,60);
+	  for(int i=0;i<SequentallistSize(&list);++i)
+	  {
+	  	printf("%d %d\n",i,SequentallistIndex(&list,i));
+	
+	  	
+	  }
+	  SequentallistDetroy(&list);
+  }
+ 
+ 
